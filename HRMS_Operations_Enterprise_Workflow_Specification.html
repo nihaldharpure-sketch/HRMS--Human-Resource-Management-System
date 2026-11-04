@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HRMS Operations — Enterprise Platform Architecture & Workflow Specification</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        @page {
+            size: A4;
+            margin: 18mm 16mm 18mm 16mm;
+            @bottom-right {
+                content: counter(page);
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                font-size: 8pt;
+                color: #64748b;
+            }
+        }
+
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-light: #eef2ff;
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475569;
+            --slate-500: #64748b;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --slate-50: #f8fafc;
+            --emerald: #10b981;
+            --amber: #f59e0b;
+            --purple: #8b5cf6;
+            --rose: #f43f5e;
+            --sky: #0284c7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--slate-800);
+            background: #ffffff;
+            line-height: 1.55;
+            font-size: 9.5pt;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .avoid-break {
+            page-break-inside: avoid;
+        }
+
+        /* Cover Page */
+        .cover-page {
+            height: 100%;
+            min-height: 250mm;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px 20px 20px;
+            page-break-after: always;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .cover-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .cover-badge {
+            background: linear-gradient(135deg, var(--primary), #7c3aed);
+            color: #ffffff;
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 22pt;
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .cover-sub {
+            font-size: 9pt;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .cover-main-title {
+            font-size: 32pt;
+            font-weight: 800;
+            color: var(--slate-900);
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+            margin: 40px 0 16px;
+        }
+
+        .cover-tagline {
+            font-size: 13pt;
+            color: var(--slate-600);
+            max-width: 650px;
+            line-height: 1.6;
+        }
+
+        .cover-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin: 45px 0;
+            background: var(--slate-50);
+            border: 1px solid var(--slate-200);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .cover-meta-item .label {
+            font-size: 7.5pt;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--slate-500);
+            letter-spacing: 0.08em;
+            margin-bottom: 4px;
+        }
+
+        .cover-meta-item .val {
+            font-size: 10pt;
+            font-weight: 700;
+            color: var(--slate-900);
+        }
+
+        .cover-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--slate-200);
+            padding-top: 16px;
+            font-size: 8pt;
+            color: var(--slate-500);
+        }
+
+        /* Section Headings */
+        h1, h2, h3, h4 {
+            color: var(--slate-900);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            font-size: 16pt;
+            margin: 28px 0 14px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--slate-200);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 .section-num {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 10pt;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 800;
+        }
+
+        h3 {
+            font-size: 12pt;
+            margin: 18px 0 8px;
+            color: var(--slate-800);
+        }
+
+        p {
+            margin-bottom: 10px;
+            color: var(--slate-700);
+        }
+
+        /* Persona & Role Cards */
+        .persona-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin: 16px 0;
+        }
+
+        .persona-card {
+            border: 1px solid var(--slate-200);
+            border-radius: 10px;
+            padding: 14px;
+            background: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            page-break-inside: avoid;
+        }
+
+        .persona-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .persona-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 11pt;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .persona-title {
+            font-weight: 700;
+            font-size: 10pt;
+            color: var(--slate-900);
+        }
+
+        .persona-role-badge {
+            font-size: 6.5pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: var(--slate-100);
+            color: var(--slate-600);
+        }
+
+        .persona-body {
+            font-size: 8.5pt;
+            color: var(--slate-600);
+            line-height: 1.45;
+        }
+
+        .persona-creds {
+            margin-top: 8px;
+            padding-top: 6px;
+            border-top: 1px dashed var(--slate-200);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 7.5pt;
+            color: var(--slate-700);
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Flow Diagrams */
+        .flow-container {
+            background: var(--slate-900);
+            color: #ffffff;
+            border-radius: 10px;
+            padding: 16px;
+            margin: 14px 0;
+            page-break-inside: avoid;
+        }
+
+        .flow-title {
+            font-size: 9pt;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #818cf8;
+            margin-bottom: 12px;
+        }
+
+        .flow-steps {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow-x: auto;
+            flex-wrap: wrap;
+        }
+
+        .flow-step {
+            background: var(--slate-800);
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 8pt;
+            font-weight: 600;
+            color: #f1f5f9;
+            text-align: center;
+            flex: 1;
+            min-width: 90px;
+        }
+
+        .flow-step.highlight {
+            background: var(--primary);
+            border-color: #6366f1;
+            color: #ffffff;
+        }
+
+        .flow-arrow {
+            color: #64748b;
+            font-weight: 800;
+            font-size: 11pt;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0;
+            font-size: 8.5pt;
+            page-break-inside: avoid;
+        }
+
+        th {
+            background: var(--slate-100);
+            color: var(--slate-700);
+            font-weight: 700;
+            text-align: left;
+            padding: 8px 12px;
+            border: 1px solid var(--slate-200);
+            text-transform: uppercase;
+            font-size: 7pt;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 8px 12px;
+            border: 1px solid var(--slate-200);
+            color: var(--slate-700);
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) td {
+            background: #fafbfd;
+        }
+
+        .badge-pill {
+            display: inline-block;
+            padding: 2px 7px;
+            border-radius: 12px;
+            font-size: 7pt;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-green { background: #dcfce7; color: #15803d; }
+        .badge-blue { background: #dbeafe; color: #1d4ed8; }
+        .badge-amber { background: #fef3c7; color: #b45309; }
+        .badge-purple { background: #f3e8ff; color: #7e22ce; }
+
+        /* Feature Matrix Box */
+        .feature-box {
+            border: 1px solid var(--slate-200);
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+            background: #ffffff;
+            page-break-inside: avoid;
+        }
+
+        .feature-box h4 {
+            font-size: 9.5pt;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .feature-box p {
+            font-size: 8.5pt;
+            color: var(--slate-600);
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="cover-page">
+    <div>
+        <div class="cover-header">
+            <div class="cover-badge">H</div>
+            <div>
+                <div class="cover-sub">Enterprise Solution Document</div>
+                <div style="font-size: 14pt; font-weight: 800; color: var(--slate-900);">HRMS Operations Enterprise Platform</div>
+            </div>
+        </div>
+
+        <div class="cover-main-title">
+            Enterprise Architecture & Comprehensive Workflow Specification
+        </div>
+        <div class="cover-tagline">
+            An end-to-end operational guide explaining the role-based workflows, automated pipelines, talent acquisition lifecycle, payroll processing, and self-service capabilities for executive clients and stakeholders.
+        </div>
+
+        <div class="cover-meta-grid">
+            <div class="cover-meta-item">
+                <div class="label">Client & Audience</div>
+                <div class="val">Executive Stakeholders & HR Leadership</div>
+            </div>
+            <div class="cover-meta-item">
+                <div class="label">Technology Stack</div>
+                <div class="val">Java 23 • Spring Boot 3.3.3 • MySQL 8.0</div>
+            </div>
+            <div class="cover-meta-item">
+                <div class="label">Platform Version</div>
+                <div class="val">Enterprise SaaS v2.4 (Production Ready)</div>
+            </div>
+            <div class="cover-meta-item">
+                <div class="label">Deployment Host</div>
+                <div class="val">Localhost Enterprise Engine (Port 8081)</div>
+            </div>
+            <div class="cover-meta-item">
+                <div class="label">Security Architecture</div>
+                <div class="val">Spring Security 6 • BCrypt • RBAC</div>
+            </div>
+            <div class="cover-meta-item">
+                <div class="label">Document Status</div>
+                <div class="val">Official Client Walkthrough Spec</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cover-footer">
+        <div>Generated for HRMS Operations System Walkthrough</div>
+        <div>Confidential & Proprietary Enterprise Software Specification</div>
+    </div>
+</div>
+
+<!-- SECTION 1: ARCHITECTURAL OVERVIEW -->
+<h2><span class="section-num">01</span> System Architecture & Core Stack</h2>
+<p>
+    HRMS Operations is architected as a modern, high-throughput enterprise platform engineered to unify workforce management, talent acquisition, attendance tracking, compensation runs, and organizational governance into a single, cohesive SaaS ecosystem.
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Layer</th>
+            <th>Technology Chosen</th>
+            <th>Architectural Role & Enterprise Benefit</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Core Engine</strong></td>
+            <td>Java 23 (LTS) & Spring Boot 3.3.3</td>
+            <td>High-performance virtual threads, strict memory management, and production-grade REST/MVC controllers.</td>
+        </tr>
+        <tr>
+            <td><strong>Database Layer</strong></td>
+            <td>MySQL 8.0 & Hibernate 6 / JPA</td>
+            <td>ACID compliance, relational foreign-key integrity, HikariCP connection pooling, and optimized indexing.</td>
+        </tr>
+        <tr>
+            <td><strong>Security & Auth</strong></td>
+            <td>Spring Security 6 & BCrypt</td>
+            <td>Role-Based Access Control (RBAC), multi-identifier user authentication (Username, Email, or Employee Code).</td>
+        </tr>
+        <tr>
+            <td><strong>Presentation</strong></td>
+            <td>JSP + Enterprise Tailwind Tokens</td>
+            <td>Server-rendered responsive UI with an 8px grid, dark slate navigation, live notifications, and interactive popups.</td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- SECTION 2: ROLE-BASED ACCESS & ACTORS MATRIX -->
+<h2><span class="section-num">02</span> Personas & Role-Based Access Matrix</h2>
+<p>
+    The platform enforces strict role-based authorization to guarantee privacy, statutory compliance, and separation of duties.
+</p>
+
+<div class="persona-grid">
+    <div class="persona-card">
+        <div class="persona-header">
+            <div class="persona-avatar">A</div>
+            <div>
+                <div class="persona-title">System Administrator</div>
+                <span class="persona-role-badge">ROLE_ADMIN</span>
+            </div>
+        </div>
+        <div class="persona-body">
+            Full operational governance, platform auditing, organization hierarchy configuration, role assignments, and system-wide overrides.
+        </div>
+        <div class="persona-creds">
+            <span>Username: <strong>admin</strong></span>
+            <span>Password: <strong>admin123</strong></span>
+        </div>
+    </div>
+
+    <div class="persona-card">
+        <div class="persona-header">
+            <div class="persona-avatar" style="background: #dcfce7; color: #15803d;">H</div>
+            <div>
+                <div class="persona-title">HR Manager (Elena Rostova / Sarah)</div>
+                <span class="persona-role-badge">ROLE_HR_MANAGER</span>
+            </div>
+        </div>
+        <div class="persona-body">
+            Talent acquisition Kanban pipeline, candidate hiring, onboarding checklists, leave approvals, employee lifecycle and directory management.
+        </div>
+        <div class="persona-creds">
+            <span>Username: <strong>hrmanager</strong></span>
+            <span>Password: <strong>hr123</strong></span>
+        </div>
+    </div>
+
+    <div class="persona-card">
+        <div class="persona-header">
+            <div class="persona-avatar" style="background: #f3e8ff; color: #7e22ce;">P</div>
+            <div>
+                <div class="persona-title">Payroll Manager (Marcus Vance)</div>
+                <span class="persona-role-badge">ROLE_PAYROLL_MANAGER</span>
+            </div>
+        </div>
+        <div class="persona-body">
+            Salary structure definitions, batch compensation runs, attendance & overtime calculation, tax deduction formulas, and payslip distribution.
+        </div>
+        <div class="persona-creds">
+            <span>Username: <strong>payroll</strong></span>
+            <span>Password: <strong>payroll123</strong></span>
+        </div>
+    </div>
+
+    <div class="persona-card">
+        <div class="persona-header">
+            <div class="persona-avatar" style="background: #fef3c7; color: #b45309;">M</div>
+            <div>
+                <div class="persona-title">Engineering Lead / Manager (David Lee)</div>
+                <span class="persona-role-badge">ROLE_MANAGER</span>
+            </div>
+        </div>
+        <div class="persona-body">
+            Team supervision, direct report leave authorizations, attendance regularizations, candidate technical interviews, and KPI reviews.
+        </div>
+        <div class="persona-creds">
+            <span>Username: <strong>david</strong></span>
+            <span>Password: <strong>user123</strong></span>
+        </div>
+    </div>
+
+    <div class="persona-card">
+        <div class="persona-header">
+            <div class="persona-avatar" style="background: #e0f2fe; color: #0369a1;">E</div>
+            <div>
+                <div class="persona-title">General Employee (Priya Nair / Alex)</div>
+                <span class="persona-role-badge">ROLE_EMPLOYEE</span>
+            </div>
+        </div>
+        <div class="persona-body">
+            Dedicated Employee Self-Service (ESS) hub: real-time punch clock, leave quota tracking, attendance history, onboarding tasks, and payslips.
+        </div>
+        <div class="persona-creds">
+            <span>Username: <strong>priya</strong></span>
+            <span>Password: <strong>user123</strong></span>
+        </div>
+    </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- SECTION 3: RECRUITMENT TO ONBOARDING WORKFLOW -->
+<h2><span class="section-num">03</span> Talent Acquisition & Onboarding Lifecycle</h2>
+<p>
+    The recruitment module integrates applicant tracking directly with employee provisioning. Candidates advance through structured stages until hiring automatically initiates the cross-department onboarding engine.
+</p>
+
+<div class="flow-container">
+    <div class="flow-title">Recruitment Pipeline Stages</div>
+    <div class="flow-steps">
+        <div class="flow-step">1. Applied</div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">2. Screening</div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">3. Shortlisted</div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step highlight">4. Interview</div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">5. Selected</div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">6. Offer</div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step highlight">7. Hired</div>
+    </div>
+</div>
+
+<div class="feature-box">
+    <h4>Step 1: Requisition & Sourcing</h4>
+    <p>HR creates job postings specifying department, vacancies, closing dates, and hiring manager. Candidates register with contact information, experience, and expectations.</p>
+</div>
+
+<div class="feature-box">
+    <h4>Step 2: Technical & Managerial Interviews</h4>
+    <p>Interviews are scheduled with calendar times and secure meeting URLs. Assigned interviewers submit quantitative scores (1 to 5) and qualitative evaluation notes directly on the platform.</p>
+</div>
+
+<div class="feature-box">
+    <h4>Step 3: One-Click Hiring & Employee Auto-Provisioning</h4>
+    <p>When the candidate is moved to <code>HIRED</code>, the system triggers a transactional creation workflow: generating an employee code (<code>EMP-100X</code>), linking reporting managers, initializing leave balances, creating salary structures, and generating initial login credentials.</p>
+</div>
+
+<div class="feature-box">
+    <h4>Step 4: Cross-Functional Onboarding Checklist</h4>
+    <p>The system auto-generates department-specific onboarding items across HR (document verification), IT (hardware provisioning & credentials), Manager (1-on-1 alignment), and Employee (compliance training).</p>
+</div>
+
+<!-- SECTION 4: EMPLOYEE SELF-SERVICE (ESS) HUB WORKFLOW -->
+<h2><span class="section-num">04</span> Employee Self-Service (ESS) Portal</h2>
+<p>
+    Employees access a tailored dashboard designed for daily productivity and transparency. Self-service reduces HR administrative burden while keeping workers informed.
+</p>
+
+<div class="flow-container">
+    <div class="flow-title">Daily Employee Self-Service Routine</div>
+    <div class="flow-steps">
+        <div class="flow-step highlight">One-Click Punch In</div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">Live Session Duration</div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">Leave Quota Review</div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">Apply for Leave</div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step highlight">One-Click Punch Out</div>
+    </div>
+</div>
+
+<div class="persona-grid">
+    <div class="feature-box">
+        <h4>Live Attendance Punch Clock</h4>
+        <p>Employees punch in upon arrival. The system computes standard work hours (8h), flags late arrivals after 09:30 AM, logs overtime, and allows punch-out upon day completion.</p>
+    </div>
+    <div class="feature-box">
+        <h4>Leave Quota Cards</h4>
+        <p>Interactive cards display total, consumed, and remaining allowances for Annual, Casual, and Sick leaves for the current calendar year with instant application submission.</p>
+    </div>
+    <div class="feature-box">
+        <h4>Attendance Correction Requests</h4>
+        <p>If an employee misses a punch or encounters transit delays, they submit an attendance regularization note with requested times for manager review.</p>
+    </div>
+    <div class="feature-box">
+        <h4>Confidential Payslip Access</h4>
+        <p>Employees securely review and download their monthly compensation breakdowns, showing allowances, statutory deductions, overtime bonuses, and net take-home pay.</p>
+    </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- SECTION 5: ATTENDANCE, SHIFTS & LEAVE MANAGEMENT -->
+<h2><span class="section-num">05</span> Attendance Engine & Leave Governance</h2>
+<p>
+    The platform enforces rigorous operational rules to ensure fair timekeeping and automated policy compliance.
+</p>
+
+<div class="feature-box">
+    <h4>Standard Working Hours & Late Threshold</h4>
+    <p>Standard workday is calculated at <strong>8.0 hours</strong>. Any check-in registered past <strong>09:30 AM</strong> automatically logs late minutes and tags the record status as <code>LATE</code> for supervisor visibility.</p>
+</div>
+
+<div class="feature-box">
+    <h4>Overtime Calculation Formula</h4>
+    <p>Time recorded in excess of the standard 8.0 hours is tracked as overtime hours. During monthly compensation processing, approved overtime is dynamically calculated and added to the employee's payroll allowances.</p>
+</div>
+
+<div class="feature-box">
+    <h4>Leave Approval & Overlap Protection Workflow</h4>
+    <p>The leave engine automatically excludes Saturdays and Sundays from leave calculations, prevents overlapping date bookings, and routes requests to the reporting manager with instant in-app alerts.</p>
+</div>
+
+<!-- SECTION 6: PAYROLL PROCESSING & SALARY STRUCTURES -->
+<h2><span class="section-num">06</span> Automated Payroll & Compensation Cycle</h2>
+<p>
+    The payroll module provides mathematical precision, duplicate protection, and statutory compliance.
+</p>
+
+<div class="flow-container">
+    <div class="flow-title">Monthly Payroll Generation Cycle</div>
+    <div class="flow-steps">
+        <div class="flow-step">1. Salary Structure</div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">2. Attendance Audit</div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step highlight">3. Batch Compute</div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">4. Manager Review</div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step highlight">5. Payout & Payslip</div>
+    </div>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Component</th>
+            <th>Type</th>
+            <th>Calculation Rule</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Basic Salary</strong></td>
+            <td>Earnings</td>
+            <td>Contracted monthly fixed base compensation.</td>
+        </tr>
+        <tr>
+            <td><strong>House Rent Allowance (HRA)</strong></td>
+            <td>Earnings</td>
+            <td>Configurable allowance (default 40% of Basic Salary).</td>
+        </tr>
+        <tr>
+            <td><strong>Special / Conveyance / Medical</strong></td>
+            <td>Earnings</td>
+            <td>Fixed allowances for transport, healthcare, and performance.</td>
+        </tr>
+        <tr>
+            <td><strong>Overtime Pay</strong></td>
+            <td>Variable Earning</td>
+            <td>Accumulated approved overtime hours &times; hourly wage rate.</td>
+        </tr>
+        <tr>
+            <td><strong>Provident Fund (PF)</strong></td>
+            <td>Statutory Deduction</td>
+            <td>12% statutory deduction on Basic Salary.</td>
+        </tr>
+        <tr>
+            <td><strong>Professional Tax & Income Tax</strong></td>
+            <td>Statutory Deduction</td>
+            <td>Configurable progressive deduction brackets.</td>
+        </tr>
+        <tr>
+            <td><strong>Net Take-Home Pay</strong></td>
+            <td>Total Disbursed</td>
+            <td><code>(Basic + Total Allowances) - Total Statutory Deductions</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- SECTION 7: REAL-TIME NOTIFICATION POPUP SYSTEM -->
+<h2><span class="section-num">07</span> In-App Real-Time Notification & Popup Toast System</h2>
+<p>
+    To ensure critical HR events are never overlooked, the platform incorporates a floating notification toast system across the entire application shell.
+</p>
+
+<div class="feature-box">
+    <h4>Automated Notification Triggering</h4>
+    <p>Notifications are automatically dispatched when leave requests are submitted, interviews are scheduled, candidates accept offers, attendance corrections are requested, or compensation runs are completed.</p>
+</div>
+
+<div class="feature-box">
+    <h4>Interactive Floating Popup Card</h4>
+    <p>When an authenticated user (Admin, HR, Manager, or Employee) opens their dashboard or portal, unread notifications appear as animated floating cards on the lower-right corner of the workspace.</p>
+</div>
+
+<div class="feature-box">
+    <h4>Instant Dismissal & "Mark as Read"</h4>
+    <p>Each popup card provides an <strong>Open</strong> link and a <strong>Mark as Read</strong> button. Clicking "Mark as Read" makes an asynchronous background call to the database, decrements the topbar bell badge, and animates the card off the screen.</p>
+</div>
+
+<!-- SECTION 8: CLIENT DEMO & VERIFICATION GUIDE -->
+<h2><span class="section-num">08</span> Client Demo Verification Guide</h2>
+<p>
+    Stakeholders can verify all workflows on the live local deployment:
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Module Name</th>
+            <th>Direct Access URL</th>
+            <th>Recommended Test Account</th>
+            <th>Key Actions to Showcase</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Executive Dashboard</strong></td>
+            <td><code>/dashboard</code></td>
+            <td><code>admin</code> (pass: <code>admin123</code>)</td>
+            <td>Live headcount, 7-day attendance trends, department distribution, quick actions.</td>
+        </tr>
+        <tr>
+            <td><strong>Self-Service Portal</strong></td>
+            <td><code>/portal</code></td>
+            <td><code>priya</code> (pass: <code>user123</code>)</td>
+            <td>Live punch clock, leave quota balances, task list, personal payslips.</td>
+        </tr>
+        <tr>
+            <td><strong>Recruitment ATS</strong></td>
+            <td><code>/recruitment</code></td>
+            <td><code>hrmanager</code> (pass: <code>hr123</code>)</td>
+            <td>7-stage candidate Kanban, interview scheduling, feedback ratings, hire candidate.</td>
+        </tr>
+        <tr>
+            <td><strong>Leave Management</strong></td>
+            <td><code>/leave</code></td>
+            <td><code>david</code> (pass: <code>user123</code>)</td>
+            <td>Pending leave requests, approve/reject workflow, quota deductions.</td>
+        </tr>
+        <tr>
+            <td><strong>Payroll & Salary</strong></td>
+            <td><code>/payroll</code></td>
+            <td><code>payroll</code> (pass: <code>payroll123</code>)</td>
+            <td>Batch payroll calculation, duplicate run protection, detailed printable payslips.</td>
+        </tr>
+        <tr>
+            <td><strong>AI HR Insights</strong></td>
+            <td><code>/insights</code></td>
+            <td><code>admin</code> (pass: <code>admin123</code>)</td>
+            <td>Automated turnover risk analysis, absenteeism detection, operational alerts.</td>
+        </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

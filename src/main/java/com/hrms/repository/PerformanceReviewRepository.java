@@ -1,0 +1,13 @@
+package com.hrms.repository;
+
+import com.hrms.entity.PerformanceReview;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface PerformanceReviewRepository extends JpaRepository<PerformanceReview, Long> {
+    List<PerformanceReview> findByEmployeeIdOrderByReviewDateDesc(Long employeeId);
+    List<PerformanceReview> findByReviewerIdOrderByReviewDateDesc(Long reviewerId);
+    List<PerformanceReview> findAllByOrderByReviewDateDesc();
+    long countByStatus(String status);
+}
